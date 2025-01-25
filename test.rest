@@ -1,0 +1,29 @@
+###
+GET http://localhost:5000/employees
+
+###
+POST http://localhost:3000/employees
+Content-Type: application/json
+
+{
+    "firstName": "Ben",
+    "lastName": "Cox",
+    "department": "Quadparser Technician",
+    "email": "jcox@example.org",
+    "birthday": "1995-03-05"
+}
+
+###
+PUT http://localhost:3000/employees/6794cdad14f74ef6e4b29b11
+Content-Type: application/json
+
+{
+    "firstName": "Frank",
+    "lastName": "Smith",
+    "department": "Data Technician",
+    "email": "fcox@example.org",
+    "birthday": "1995-03-05"
+}
+
+###
+DELETE http://localhost:3000/employees/6794cdad14f74ef6e4b29b11
