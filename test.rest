@@ -2,7 +2,7 @@
 GET http://localhost:5000/employees
 
 ###
-POST http://localhost:3000/employees
+POST http://localhost:5000/employees
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/employees/6794cdad14f74ef6e4b29b11
+PUT http://localhost:5000/employees/67951282a719f55dd816166c
 Content-Type: application/json
 
 {

@@ -9,6 +9,7 @@ require('dotenv').config();
 const employeeRoutes = require('./routes/employeeRoutes');
 
 const app = express();
+const uri = "mongodb+srv://nicholaskwabenaamo:Lowkeymovement02@cluster.8wmqd.mongodb.net/Employees_info_api"
 const PORT = process.env.PORT || 5000;
 
 // Middleware

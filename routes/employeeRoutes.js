@@ -1,6 +1,8 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Employee = require('../models/Employee');
+const EmployeeBackup = require('../models/EmployeeBackup');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
@@ -31,11 +33,26 @@ router.post(
         }
 
         const employee = new Employee(req.body);
+        const session = await mongoose.startSession(); // Start a session
+
         try {
-            const savedEmployee = await employee.save();
+            session.startTransaction();
+
+            // Save the new employee
+            const savedEmployee = await employee.save({ session });
+
+            // Back up the new employee
+            const backupEntry = new EmployeeBackup(savedEmployee.toObject());
+            await backupEntry.save({ session });
+
+            await session.commitTransaction();
             res.status(201).json(savedEmployee);
         } catch (err) {
+            console.error(err);
+            await session.abortTransaction();
             res.status(400).json({ message: err.message });
+        } finally {
+            session.endSession(); // Ensure the session is ended
         }
     }
 );
@@ -56,24 +73,53 @@ router.put(
             return res.status(400).json({ errors: errors.array() });
         }
 
+        const session = await mongoose.startSession(); // Start a session
+
         try {
-            const updatedEmployee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            session.startTransaction();
+
+            // Update the employee
+            const updatedEmployee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true, session });
             if (!updatedEmployee) return res.status(404).json({ message: 'Employee not found' });
+
+            // Back up the updated employee
+            const backupEntry = new EmployeeBackup(updatedEmployee.toObject());
+            await backupEntry.save({ session });
+
+            await session.commitTransaction();
             res.json(updatedEmployee);
         } catch (err) {
+            console.error(err);
+            await session.abortTransaction();
             res.status(400).json({ message: err.message });
+        } finally {
+            session.endSession(); // Ensure the session is ended
         }
     }
 );
 
 // DELETE an employee
 router.delete('/:id', async (req, res) => {
+    const session = await mongoose.startSession(); // Start a session
+
     try {
-        const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+        session.startTransaction();
+
+        const deletedEmployee = await Employee.findByIdAndDelete(req.params.id, { session });
         if (!deletedEmployee) return res.status(404).json({ message: 'Employee not found' });
+
+        // Back up the deleted employee
+        const backupEntry = new EmployeeBackup(deletedEmployee.toObject());
+        await backupEntry.save({ session });
+
+        await session.commitTransaction();
         res.json({ message: 'Employee deleted' });
     } catch (err) {
+        console.error(err);
+        await session.abortTransaction();
         res.status(500).json({ message: err.message });
+    } finally {
+        session.endSession(); // Ensure the session is ended
     }
 });
 
