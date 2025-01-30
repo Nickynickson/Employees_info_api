@@ -39,12 +39,12 @@ router.post(
         }
 
         const employee = new Employee(req.body);
-        const session = await mongoose.startSession(); // Start a session
+        const session = await mongoose.startSession();
 
         try {
             session.startTransaction();
 
-            // Save the new employee
+            // To Save the new employee
             const savedEmployee = await employee.save({ session });
 
             // Back up the new employee without specifying _id
@@ -59,7 +59,7 @@ router.post(
             await session.abortTransaction();
             res.status(400).json({ message: err.message });
         } finally {
-            session.endSession(); // Ensure the session is ended
+            session.endSession();
         }
     }
 );
@@ -80,7 +80,7 @@ router.put(
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const session = await mongoose.startSession(); // Start a session
+        const session = await mongoose.startSession(); 
 
         try {
             session.startTransaction();
@@ -94,7 +94,7 @@ router.put(
             if (!existingBackup) {
                 // Back up the updated employee without specifying _id
                 const backupEntry = new EmployeeBackup(updatedEmployee.toObject());
-                delete backupEntry._id; // Ensure no _id is set to avoid duplication
+                delete backupEntry._id;
                 await backupEntry.save({ session });
             }
 
@@ -105,7 +105,7 @@ router.put(
             await session.abortTransaction();
             res.status(400).json({ message: err.message });
         } finally {
-            session.endSession(); // Ensure the session is ended
+            session.endSession();
         }
     }
 );
