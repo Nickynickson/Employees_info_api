@@ -32,6 +32,12 @@ router.post(
             return res.status(400).json({ errors: errors.array() });
         }
 
+        // Check for duplicate email
+        const existingEmployee = await Employee.findOne({ email: req.body.email });
+        if (existingEmployee) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+
         const employee = new Employee(req.body);
         const session = await mongoose.startSession(); // Start a session
 
@@ -41,8 +47,9 @@ router.post(
             // Save the new employee
             const savedEmployee = await employee.save({ session });
 
-            // Back up the new employee
+            // Back up the new employee without specifying _id
             const backupEntry = new EmployeeBackup(savedEmployee.toObject());
+            delete backupEntry._id; // Ensure no _id is set to avoid duplication
             await backupEntry.save({ session });
 
             await session.commitTransaction();
@@ -82,9 +89,14 @@ router.put(
             const updatedEmployee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true, session });
             if (!updatedEmployee) return res.status(404).json({ message: 'Employee not found' });
 
-            // Back up the updated employee
-            const backupEntry = new EmployeeBackup(updatedEmployee.toObject());
-            await backupEntry.save({ session });
+            // Check if a backup already exists for this employee
+            const existingBackup = await EmployeeBackup.findOne({ _id: updatedEmployee._id });
+            if (!existingBackup) {
+                // Back up the updated employee without specifying _id
+                const backupEntry = new EmployeeBackup(updatedEmployee.toObject());
+                delete backupEntry._id; // Ensure no _id is set to avoid duplication
+                await backupEntry.save({ session });
+            }
 
             await session.commitTransaction();
             res.json(updatedEmployee);
@@ -107,10 +119,6 @@ router.delete('/:id', async (req, res) => {
 
         const deletedEmployee = await Employee.findByIdAndDelete(req.params.id, { session });
         if (!deletedEmployee) return res.status(404).json({ message: 'Employee not found' });
-
-        // Back up the deleted employee
-        const backupEntry = new EmployeeBackup(deletedEmployee.toObject());
-        await backupEntry.save({ session });
 
         await session.commitTransaction();
         res.json({ message: 'Employee deleted' });

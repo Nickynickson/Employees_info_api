@@ -6,15 +6,15 @@ POST http://localhost:5000/employees
 Content-Type: application/json
 
 {
-    "firstName": "Ben",
+    "firstName": "hennry",
     "lastName": "Cox",
-    "department": "Quadparser Technician",
-    "email": "jcox@example.org",
-    "birthday": "1995-03-05"
+    "department": "Quadparser",
+    "email": "Hcox@example.edu",
+    "birthday": "1998-10-15"
 }
 
 ###
-PUT http://localhost:5000/employees/67951282a719f55dd816166c
+PUT http://localhost:5000/employees/679be01d535693251cfe96d0
 Content-Type: application/json
 
 {
@@ -22,8 +22,10 @@ Content-Type: application/json
     "lastName": "Smith",
     "department": "Data Technician",
     "email": "fcox@example.org",
-    "birthday": "1995-03-05"
+    "birthday": "1990-09-08"
 }
 
 ###
-DELETE http://localhost:3000/employees/6794cdad14f74ef6e4b29b11
+DELETE http://localhost:5000/employees/679be01d535693251cfe96d0
+
+
