@@ -24,7 +24,9 @@ router.post(
         body('lastName').isString().notEmpty().withMessage('Last name is required'),
         body('department').isString().notEmpty().withMessage('Department is required'),
         body('email').isEmail().withMessage('Valid email is required'),
-        body('birthday').optional().isDate().withMessage('Birthday must be a valid date')
+        body('birthday').optional().isDate().withMessage('Birthday must be a valid date'),
+        body('Hobby').optional().isString().withMessage('Hobby is required'),
+        body('University').optional().isString().withMessage('University required')
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -72,7 +74,9 @@ router.put(
         body('lastName').optional().isString().notEmpty().withMessage('Last name must be a non-empty string'),
         body('department').optional().isString().notEmpty().withMessage('Department must be a non-empty string'),
         body('email').optional().isEmail().withMessage('Valid email is required'),
-        body('birthday').optional().isDate().withMessage('Birthday must be a valid date')
+        body('birthday').optional().isDate().withMessage('Birthday must be a valid date'),
+        body('Hobby').optional().isString().withMessage('Hobby is required'),
+        body('University').optional().isString().withMessage('University required')
     ],
     async (req, res) => {
         const errors = validationResult(req);

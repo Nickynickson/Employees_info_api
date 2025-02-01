@@ -10,6 +10,17 @@
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "oauth2": {
+      "type": "oauth2",
+      "flow": "implicit",
+      "authorizationUrl": "https://github.com/login/oauth/authorize?client_id=GITHUB_CLIENT_ID",
+      "scopes": {
+        "read:employees": "Read employee information",
+        "write:employees": "Write employee information"
+      }
+    }
+  },
   "paths": {
     "/employees/": {
       "get": {
@@ -25,33 +36,38 @@
       },
       "post": {
         "description": "Create a new Employee Info Id",
-        "parameters":[
+        "parameters": [
           {
-            "name":"body",
-            "in":"body",
-            "required":true,
-            "schema":{
-              "type":"object",
-              "properties":{
-                "firstName":{
-                  "type":"string"},
-                  "lastName":{
-                    "type":"string"},
-                    "department":{
-                      "type":"string"
-                    },
-                    "email":{
-                      "type":"string"
-                    },
-                    "birthday":{
-                      "type":"string"
-                    }
-                  }
-                  }
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "department": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "birthday": {
+                  "type": "string"
+                },
+                "Hobby": {
+                  "type": "string"
+                },
+                "University": {
+                  "type": "string"
                 }
-            
-            
-          
+              }
+            }
+          }
         ],
         "responses": {
           "201": {
@@ -72,34 +88,40 @@
             "in": "path",
             "required": true,
             "schema": {
-                "type": "string"
+              "type": "string"
             },
             "description": "The ID of the contact to update"
-        },
-        {
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-                "type": "object",
-                "properties": {
-                    "firstName": {
-                        "type": "string"
-                    },
-                    "lastName": {
-                        "type": "string"
-                    },
-                    "department": {
-                        "type": "string"
-                    },
-                    "email":{
-                      "type":"string"
-                    },
-                    "birthday":{
-                      "type":"string"
-                    }
-                  }
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "department": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "birthday": {
+                  "type": "string"
+                },
+                "Hobby": {
+                  "type": "string"
+                },
+                "University": {
+                  "type": "string"
                 }
+              }
+            }
           }
         ],
         "responses": {
@@ -133,6 +155,22 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/protected": {
+      "get": {
+        "security": [
+          {
+            "oauth2": [
+              "read:employees"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }

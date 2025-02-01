@@ -6,6 +6,8 @@ const employeeBackupSchema = new mongoose.Schema({
     department: { type: String, required: true },
     email: { type: String, required: true },
     birthday: { type: Date, required: false },
+    Hobby: { type: String, required: true },
+    University: { type: String, required: true },
     createdAt: { type: Date, default: Date.now } // To track when the backup was created
 });
 
